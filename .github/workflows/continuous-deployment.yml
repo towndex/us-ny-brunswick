@@ -1,0 +1,33 @@
+name: Continuous Deployment
+on:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+        id: configure_pages
+      - uses: towndex/action@v1-beta
+        with:
+          data_paths: /github/workspace/data.trig
+          next_base_path: ${{ steps.configure_pages.outputs.base_path }}
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+  deploy:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
