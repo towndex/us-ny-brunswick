@@ -17,6 +17,7 @@ jobs:
         with:
           data_paths: /github/workspace/data.trig
           next_base_path: ${{ steps.configure_pages.outputs.base_path }}
+          site_title: "Town of Brunswick"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         if: ${{ github.ref == 'refs/heads/main' }}
